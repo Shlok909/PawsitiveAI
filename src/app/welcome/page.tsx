@@ -109,7 +109,7 @@ export default function WelcomePage() {
                     <FormLabel>Breed</FormLabel>
                     <Combobox
                       options={breedOptions}
-                      {...field}
+                      value={field.value}
                       onChange={(value) => form.setValue("breed", value)}
                       placeholder="Select a breed"
                       searchPlaceholder="Search breeds..."
