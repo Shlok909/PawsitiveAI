@@ -9,60 +9,83 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Filter } from "lucide-react";
+import { ArrowRight, Filter, Plus } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const mockHistory = [
-  { id: 1, date: "2024-07-20", emotion: "Playful", confidence: 92, action: "Played fetch" },
-  { id: 2, date: "2024-07-19", emotion: "Anxious", confidence: 78, action: "Gave calming treat" },
-  { id: 3, date: "2024-07-18", emotion: "Relaxed", confidence: 95, action: "Cuddled on couch" },
-  { id: 4, date: "2024-07-17", emotion: "Happy", confidence: 89, action: "Went for a walk" },
-  { id: 5, date: "2024-07-16", emotion: "Neutral", confidence: 91, action: "Napped" },
+  { id: 1, date: "July 20, 2024", time: "2:30 PM", emotion: "Playful", confidence: 92 },
+  { id: 2, date: "July 19, 2024", time: "10:15 AM", emotion: "Anxious", confidence: 78 },
+  { id: 3, date: "July 18, 2024", time: "6:00 PM", emotion: "Relaxed", confidence: 95 },
+  { id: 4, date: "July 17, 2024", time: "8:45 AM", emotion: "Happy", confidence: 89 },
+  { id: 5, date: "July 16, 2024", time: "4:20 PM", emotion: "Neutral", confidence: 91 },
+  { id: 6, date: "July 15, 2024", time: "1:00 PM", emotion: "Pain", confidence: 70 },
 ];
 
-const emotionColors: { [key: string]: string } = {
-  Playful: "bg-green-100 text-green-800",
-  Anxious: "bg-yellow-100 text-yellow-800",
-  Relaxed: "bg-blue-100 text-blue-800",
-  Happy: "bg-pink-100 text-pink-800",
-  Neutral: "bg-gray-100 text-gray-800",
+const emotionConfig: { [key: string]: { color: string, emoji: string } } = {
+  Playful: { color: "bg-green-500", emoji: "🎾" },
+  Anxious: { color: "bg-yellow-500", emoji: "😟" },
+  Relaxed: { color: "bg-blue-500", emoji: "😌" },
+  Happy: { color: "bg-pink-500", emoji: "😊" },
+  Pain: { color: "bg-red-500", emoji: "😣" },
+  Neutral: { color: "bg-gray-500", emoji: "😐" },
 };
 
 export default function HistoryPage() {
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="font-headline text-3xl font-bold">Analysis History</h1>
-        <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            <Button variant="outline" size="sm" className="shrink-0"><Filter className="mr-2 h-4 w-4" /> Filter</Button>
-            <Badge variant="default" className="cursor-pointer shrink-0">All</Badge>
-            <Badge variant="secondary" className="cursor-pointer shrink-0">Happy</Badge>
-            <Badge variant="secondary" className="cursor-pointer shrink-0">Anxious</Badge>
-            <Badge variant="destructive" className="cursor-pointer shrink-0">Health Alerts</Badge>
+        <h1 className="text-3xl font-bold">Analysis History</h1>
+        <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline"><Filter className="mr-2 h-4 w-4" /> Filter</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Filter by Emotion</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem checked>All</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Happy</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Anxious</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Pain</DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button asChild>
+              <Link href="/analyze">New Analysis <Plus className="ml-2 h-4 w-4" /></Link>
+            </Button>
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid gap-6">
         {mockHistory.map((item) => (
-          <Card key={item.id} className="card-neumorphic overflow-hidden">
-             <div className="relative">
-              <div className={`h-2 ${emotionColors[item.emotion] || 'bg-gray-200'}`}></div>
-             </div>
+          <Card key={item.id} className="w-full">
             <CardHeader>
-              <CardTitle className="flex justify-between items-start">
-                <span>{item.date}</span>
-                <Badge className={`${emotionColors[item.emotion] || 'bg-gray-200'}`}>{item.emotion}</Badge>
-              </CardTitle>
-              <CardDescription>Confidence: {item.confidence}%</CardDescription>
+              <div className="flex items-start justify-between">
+                <div>
+                  <CardTitle className="text-xl">{item.date}</CardTitle>
+                  <CardDescription>{item.time}</CardDescription>
+                </div>
+                <Badge variant={item.emotion === 'Pain' ? 'destructive' : 'secondary'}>
+                  <span className={`mr-2 text-lg`}>{emotionConfig[item.emotion]?.emoji || '🐾'}</span>
+                  {item.emotion}
+                </Badge>
+              </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Action taken:</span> {item.action}
-              </p>
+              <div className="flex items-center gap-4 text-sm">
+                <p>Confidence: <span className="font-semibold">{item.confidence}%</span></p>
+              </div>
             </CardContent>
-            <CardFooter className="bg-muted/50 p-4">
-              <Button variant="ghost" size="sm" asChild className="ml-auto">
+            <CardFooter className="flex justify-end">
+              <Button asChild>
                 <Link href={`/report/${item.id}`}>
-                  View Full Report <ArrowRight className="ml-2 h-4 w-4" />
+                  View Report <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </CardFooter>

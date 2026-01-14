@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PawsightLogo } from "@/components/icons";
 import { cn } from "@/lib/utils";
-import { SendHorizonal, Bot } from "lucide-react";
+import { SendHorizonal, Bot, Sparkles } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 type Message = {
   id: number;
@@ -18,13 +18,14 @@ const starterQuestions = [
     "What should I do right now?",
     "Is this limping serious?",
     "How can I help him relax?",
+    "Tell me more about the skin irritation."
 ];
 
 export default function ChatPage({ params }: { params: { id: string } }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hello! I'm your Pawsight AI assistant. How can I help you with your recent analysis?",
+      text: "Hello! I'm your Pawsight AI assistant. I can answer questions about your report. What's on your mind?",
       sender: "bot",
     },
   ]);
@@ -39,7 +40,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
   useEffect(scrollToBottom, [messages]);
   
   const handleSendMessage = (text: string) => {
-    if (text.trim() === "") return;
+    if (text.trim() === "" || isTyping) return;
 
     const userMessage: Message = {
       id: Date.now(),
@@ -54,7 +55,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
     setTimeout(() => {
       const botResponse: Message = {
         id: Date.now() + 1,
-        text: `Based on the report (ID: ${params.id}), your dog seems playful. A good response to "${text}" would be to engage in some light activity. Have you tried playing fetch?`,
+        text: `Based on the report (ID: ${params.id}), your dog seems playful. A good response to "${text}" would be to engage in some light activity. Regarding the skin irritation, it's best to monitor the area. If it worsens, consult a vet.`,
         sender: "bot",
       };
       setMessages((prev) => [...prev, botResponse]);
@@ -63,7 +64,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] flex-col md:h-[calc(100vh-8rem)]">
+    <div className="flex h-[calc(100vh-12rem)] flex-col md:h-[calc(100vh-8rem)] bg-background">
       <div className="flex-1 overflow-y-auto p-4 md:p-6">
         <div className="mx-auto max-w-3xl space-y-6">
           {messages.map((message) => (
@@ -74,10 +75,10 @@ export default function ChatPage({ params }: { params: { id: string } }) {
                 message.sender === "user" && "flex-row-reverse"
               )}
             >
-              <Avatar className="h-8 w-8">
+              <Avatar className="h-8 w-8 border">
                 {message.sender === "bot" ? (
                   <div className="flex h-full w-full items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <Bot className="h-5 w-5" />
+                    <Sparkles className="h-5 w-5" />
                   </div>
                 ) : (
                   <>
@@ -91,7 +92,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
                   "max-w-xs rounded-2xl px-4 py-3 md:max-w-md",
                   message.sender === "user"
                     ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
+                    : "bg-card border"
                 )}
               >
                 <p className="text-sm">{message.text}</p>
@@ -100,26 +101,26 @@ export default function ChatPage({ params }: { params: { id: string } }) {
           ))}
           {isTyping && (
              <div className="flex items-start gap-3">
-                 <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 border">
                      <div className="flex h-full w-full items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Bot className="h-5 w-5" />
+                        <Sparkles className="h-5 w-5" />
                     </div>
-                 </Avatar>
-                 <div className="bg-muted rounded-2xl px-4 py-3 flex items-center gap-1">
+                </Avatar>
+                 <Card className="rounded-2xl px-4 py-3 flex items-center gap-1">
                     <span className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                     <span className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                     <span className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce"></span>
-                 </div>
+                 </Card>
              </div>
           )}
           <div ref={endOfMessagesRef} />
         </div>
       </div>
-      <div className="border-t bg-background p-4 md:p-6">
+      <div className="border-t bg-card p-4 md:p-6">
         <div className="mx-auto max-w-3xl">
-            <div className="mb-4 flex gap-2 flex-wrap">
+            <div className="mb-4 flex gap-2 flex-wrap justify-center">
                 {starterQuestions.map(q => (
-                    <Button key={q} variant="outline" size="sm" onClick={() => handleSendMessage(q)}>{q}</Button>
+                    <Button key={q} variant="outline" size="sm" onClick={() => handleSendMessage(q)} disabled={isTyping}>{q}</Button>
                 ))}
             </div>
           <form
@@ -127,16 +128,17 @@ export default function ChatPage({ params }: { params: { id: string } }) {
               e.preventDefault();
               handleSendMessage(inputValue);
             }}
-            className="flex items-center gap-2"
+            className="relative"
           >
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Ask a follow-up question..."
-              className="flex-1"
+              className="pr-12 h-12"
+              disabled={isTyping}
             />
-            <Button type="submit" size="icon" disabled={isTyping}>
-              <SendHorizonal className="h-4 w-4" />
+            <Button type="submit" size="icon" disabled={isTyping} className="absolute right-2 top-1/2 -translate-y-1/2">
+              <SendHorizonal className="h-5 w-5" />
             </Button>
           </form>
         </div>

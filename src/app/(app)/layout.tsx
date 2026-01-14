@@ -10,27 +10,11 @@ import {
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-  SidebarFooter,
-} from "@/components/ui/sidebar";
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { PawsightLogo } from "@/components/icons";
-import { DisclaimerFooter } from "@/components/disclaimer-footer";
 import {
   Home,
   Clock,
@@ -38,12 +22,12 @@ import {
   PlusCircle,
   Settings,
   LogOut,
-  ChevronsLeft,
-  ChevronsRight,
+  Menu,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { DisclaimerFooter } from "@/components/disclaimer-footer";
 
 const navItems = [
   { href: "/dashboard", icon: Home, label: "Dashboard" },
@@ -54,141 +38,151 @@ const navItems = [
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
-
   const dogAvatar = PlaceHolderImages.find(img => img.id === 'dog-avatar')?.imageUrl;
 
   if (isMobile) {
-    return (
-      <div className="flex min-h-screen flex-col">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-primary">
-            <PawsightLogo className="h-7 w-7" />
-            <span className="font-headline text-lg">Pawsight AI</span>
-          </Link>
-          <UserMenu />
-        </header>
-        <main className="flex-1">{children}</main>
-        <nav className="sticky bottom-0 z-10 border-t bg-background/80 backdrop-blur-sm">
-          <div className="mx-auto grid h-16 max-w-md grid-cols-4 items-center gap-2 px-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex flex-col items-center justify-center gap-1 rounded-md p-2 text-sm font-medium",
-                  pathname === item.href
-                    ? "text-primary"
-                    : "text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
-              </Link>
-            ))}
-            <Link
-              href="/analyze"
-              className="flex flex-col items-center justify-center gap-1 text-sm font-medium text-accent"
-            >
-              <PlusCircle className="h-6 w-6" />
-              <span>Analyze</span>
+    return <MobileLayout>{children}</MobileLayout>
+  }
+  
+  return (
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <div className="hidden border-r bg-card md:block">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+          <div className="flex h-20 items-center border-b px-4 lg:px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+              <PawsightLogo className="h-8 w-8 text-primary" />
+              <span className="text-xl">Pawsight AI</span>
             </Link>
           </div>
-        </nav>
-      </div>
-    );
-  }
-
-  return (
-    <SidebarProvider>
-      <Sidebar
-        collapsible="icon"
-        className="border-r"
-      >
-        <SidebarHeader>
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-primary">
-            <PawsightLogo className="h-7 w-7" />
-            <span className="font-headline text-lg">Pawsight AI</span>
-          </Link>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname === item.href}
-                  tooltip={{ children: item.label }}
+          <div className="flex-1">
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-3 text-muted-foreground transition-all hover:text-primary",
+                    pathname === item.href && "bg-muted text-primary"
+                  )}
                 >
-                  <Link href={item.href}>
-                    <item.icon />
-                    {item.label}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === "/analyze"}
-                className="mt-4 bg-accent text-accent-foreground hover:bg-accent/90"
-                tooltip={{ children: "New Analysis" }}
-              >
-                <Link href="/analyze">
-                  <PlusCircle />
-                  New Analysis
+                  <item.icon className="h-5 w-5" />
+                  {item.label}
                 </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter>
-          <UserMenu />
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset className="max-h-screen overflow-y-auto">
-        <header className="sticky top-0 z-10 flex h-16 items-center border-b bg-background/80 px-6 backdrop-blur-sm">
-           <SidebarTrigger />
+              ))}
+            </nav>
+          </div>
+          <div className="mt-auto p-4">
+            <Button size="lg" className="w-full" asChild>
+                <Link href="/analyze">
+                    <PlusCircle className="mr-2 h-5 w-5" />
+                    New Analysis
+                </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col">
+        <header className="flex h-20 items-center gap-4 border-b bg-card px-4 lg:px-6">
+            <div className="flex-1">
+                {/* Future Header content can go here */}
+            </div>
+          <UserMenu avatarUrl={dogAvatar} />
         </header>
-        <main className="flex-1 p-2 md:p-6">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-background">
           {children}
           <DisclaimerFooter />
         </main>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }
 
-function UserMenu() {
+function MobileLayout({ children }: { children: React.ReactNode }){
+    const pathname = usePathname();
     const dogAvatar = PlaceHolderImages.find(img => img.id === 'dog-avatar')?.imageUrl;
+    const [open, setOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        setOpen(false);
+    }, [pathname]);
+
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
-                        <AvatarImage src={dogAvatar} alt="User" data-ai-hint="user avatar" />
-                        <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
+        <div className="flex min-h-screen w-full flex-col">
+          <header className="sticky top-0 flex h-20 items-center gap-4 border-b bg-card px-4 md:px-6">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
                 </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">User</p>
-                        <p className="text-xs leading-none text-muted-foreground">user@example.com</p>
-                    </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+              </SheetTrigger>
+              <SheetContent side="left" className="flex flex-col">
+                <nav className="grid gap-2 text-lg font-medium">
+                  <Link
+                    href="#"
+                    className="flex items-center gap-2 text-lg font-semibold mb-4"
+                  >
+                    <PawsightLogo className="h-8 w-8 text-primary" />
+                    <span>Pawsight AI</span>
+                  </Link>
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground",
+                        pathname === item.href && "bg-muted text-foreground"
+                      )}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {item.label}
+                    </Link>
+                  ))}
+                </nav>
+                <div className="mt-auto">
+                    <Button size="lg" className="w-full" asChild>
+                        <Link href="/analyze">
+                            <PlusCircle className="mr-2 h-5 w-5" />
+                            New Analysis
+                        </Link>
+                    </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <div className="flex-1 text-center">
+                <Link
+                    href="/dashboard"
+                    className="flex items-center justify-center gap-2 text-lg font-semibold"
+                    >
+                    <PawsightLogo className="h-8 w-8 text-primary" />
+                </Link>
+            </div>
+            
+            <UserMenu avatarUrl={dogAvatar} />
+          </header>
+          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 bg-background">
+            {children}
+            <DisclaimerFooter />
+            </main>
+        </div>
+    )
+}
+
+
+function UserMenu({avatarUrl}: {avatarUrl?: string}) {
+    return (
+        <div className="relative">
+            <Button variant="ghost" className="relative h-12 w-12 rounded-full">
+                <Avatar className="h-12 w-12">
+                    <AvatarImage src={avatarUrl} alt="User" data-ai-hint="user avatar" />
+                    <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+            </Button>
+        </div>
     )
 }
