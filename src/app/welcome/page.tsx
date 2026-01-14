@@ -60,7 +60,7 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-2 text-center">
             <PawsightLogo className="h-12 w-12 text-primary" />
@@ -143,7 +143,7 @@ export default function WelcomePage() {
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full rounded-full" size="lg">
+            <Button type="submit" className="w-full" size="lg">
               Create Profile <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
