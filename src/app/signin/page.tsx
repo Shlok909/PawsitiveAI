@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -53,7 +54,7 @@ export default function SignInPage() {
       let description = "Please check your credentials and try again.";
       if (error instanceof FirebaseError) {
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-          description = "Password or Email Incorrect.";
+          description = "Wrong email or password";
         } else {
           description = error.message;
         }
