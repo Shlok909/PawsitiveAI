@@ -88,7 +88,7 @@ export default function ReportClientPage({ id, reportImage }: ReportClientPagePr
     return (
       <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center gap-4 text-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="text-muted-foreground">Fetching your Pawsight report...</p>
+        <p className="text-muted-foreground">Fetching your PawsitiveAI report...</p>
       </div>
     );
   }

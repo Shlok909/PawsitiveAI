@@ -23,7 +23,7 @@ export default function LandingPage() {
         <div className="container mx-auto flex h-20 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 text-xl font-bold text-primary">
             <PawsightLogo className="h-8 w-8" />
-            <span className="text-2xl font-bold text-foreground">Pawsight AI</span>
+            <span className="text-2xl font-bold text-foreground">PawsitiveAI</span>
           </Link>
           <Button asChild variant="ghost">
             <Link href="/dashboard">
@@ -40,7 +40,7 @@ export default function LandingPage() {
               Finally Understand What Your Dog Is Thinking.
             </h1>
             <p className="mx-auto max-w-xl text-lg text-muted-foreground lg:mx-0">
-              Pawsight AI uses advanced technology to analyze your dog's body language and vocal cues, translating them into simple, human-readable insights.
+              PawsitiveAI uses advanced technology to analyze your dog's body language and vocal cues, translating them into simple, human-readable insights.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Button asChild size="lg" className="rounded-full px-8 py-6 text-lg">

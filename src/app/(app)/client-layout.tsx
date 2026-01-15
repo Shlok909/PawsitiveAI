@@ -63,7 +63,7 @@ export function ClientAppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex h-20 items-center border-b px-6">
             <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-primary">
               <PawsightLogo className="h-8 w-8" />
-              <span className="text-xl text-foreground">Pawsight AI</span>
+              <span className="text-xl text-foreground">PawsitiveAI</span>
             </Link>
           </div>
           <div className="flex-1 py-4">
@@ -81,7 +81,7 @@ export function ClientAppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
             </Button>
             <div className="text-center text-xs text-muted-foreground">
-                &copy; {new Date().getFullYear()} Pawsight AI
+                &copy; {new Date().getFullYear()} PawsitiveAI
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@ function MobileLayout({ children }: { children: React.ReactNode }){
                  <div className="flex h-20 items-center border-b px-6">
                     <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-primary">
                       <PawsightLogo className="h-8 w-8" />
-                      <span className="text-xl text-foreground">Pawsight AI</span>
+                      <span className="text-xl text-foreground">PawsitiveAI</span>
                     </Link>
                   </div>
                   <nav className="flex-1 grid gap-2 p-4 text-lg font-medium">

@@ -10,7 +10,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Pawsight AI",
+  title: "PawsitiveAI",
   description: "Decode your dog's silence. Understand their emotions and well-being through AI-powered analysis.",
 };
 

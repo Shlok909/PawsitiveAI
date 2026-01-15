@@ -132,7 +132,7 @@ export default function ProfilePage() {
                            </div>
                            <div>
                             <p className="text-lg font-bold">{usageStats.memberSince}</p>
-                            <p className="text-sm text-muted-foreground">Pawsight member since</p>
+                            <p className="text-sm text-muted-foreground">PawsitiveAI member since</p>
                            </div>
                         </div>
                 </CardContent>

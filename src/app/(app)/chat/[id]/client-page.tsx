@@ -52,7 +52,7 @@ export default function ChatClientPage({ id }: ChatClientPageProps) {
          setMessages([
           {
             id: 1,
-            text: `Hello! I'm your Pawsight AI assistant. I've reviewed the report for your dog's "${parsedReport.emotion}" state. How can I help you understand it better?`,
+            text: `Hello! I'm your PawsitiveAI assistant. I've reviewed the report for your dog's "${parsedReport.emotion}" state. How can I help you understand it better?`,
             sender: "bot",
           },
         ]);
@@ -228,7 +228,7 @@ export default function ChatClientPage({ id }: ChatClientPageProps) {
               <SendHorizonal className="h-5 w-5" />
             </Button>
           </form>
-           <p className="text-xs text-center text-muted-foreground mt-2">Pawsight AI can sometimes make mistakes. Verify important information.</p>
+           <p className="text-xs text-center text-muted-foreground mt-2">PawsitiveAI can sometimes make mistakes. Verify important information.</p>
         </div>
       </div>
     </div>
