@@ -22,7 +22,7 @@ import {
   User,
   PlusCircle,
   Menu,
-  Dog,
+  LogOut,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/firebase/provider";
+import { signOut } from "@/firebase/auth";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -42,18 +45,18 @@ const navItems = [
   { href: "/profile", icon: User, label: "Profile" },
 ];
 
-// This would come from user data
-const dogProfile = {
-  name: "Buddy",
-  avatarUrl: "https://images.unsplash.com/photo-1626736637845-53045bb9695b?w=100",
-};
-
-
 export function ClientAppLayout({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/signin');
+  };
 
   if (isMobile) {
-    return <MobileLayout>{children}</MobileLayout>
+    return <MobileLayout onSignOut={handleSignOut}>{children}</MobileLayout>
   }
   
   return (
@@ -89,7 +92,7 @@ export function ClientAppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col">
         <header className="flex h-20 items-center gap-4 border-b bg-card px-6">
             <div className="flex-1" />
-            <UserMenu avatarUrl={dogProfile.avatarUrl} name={dogProfile.name} />
+            <UserMenu user={user} onSignOut={handleSignOut} />
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-background">
           <div className="max-w-7xl mx-auto w-full">
@@ -102,9 +105,10 @@ export function ClientAppLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MobileLayout({ children }: { children: React.ReactNode }){
+function MobileLayout({ children, onSignOut }: { children: React.ReactNode, onSignOut: () => void }){
     const [open, setOpen] = React.useState(false);
     const pathname = usePathname();
+    const { user } = useAuth();
 
     React.useEffect(() => {
         setOpen(false);
@@ -139,7 +143,7 @@ function MobileLayout({ children }: { children: React.ReactNode }){
               <PawsightLogo className="h-8 w-8" />
             </Link>
             
-            <UserMenu avatarUrl={dogProfile.avatarUrl} name={dogProfile.name} />
+            <UserMenu user={user} onSignOut={onSignOut} />
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4 bg-background">
             {children}
@@ -169,23 +173,23 @@ function NavItem({ item, isMobile = false }: { item: typeof navItems[0], isMobil
 }
 
 
-function UserMenu({avatarUrl, name}: {avatarUrl?: string, name: string}) {
+function UserMenu({ user, onSignOut }: { user: any, onSignOut: () => void }) {
     return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-12 w-12 rounded-full">
                 <Avatar className="h-12 w-12 border-2 border-primary/50">
-                    <AvatarImage src={avatarUrl} alt={name} data-ai-hint="golden retriever" />
-                    <AvatarFallback className="bg-secondary text-lg">{name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={user?.photoURL} alt={user?.displayName || 'User'} />
+                    <AvatarFallback className="bg-secondary text-lg">{user?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                 </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">Signed in as</p>
+                <p className="text-sm font-medium leading-none">{user?.displayName || "User"}</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {name}'s Friend
+                  {user?.email}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -193,8 +197,8 @@ function UserMenu({avatarUrl, name}: {avatarUrl?: string, name: string}) {
             <DropdownMenuItem asChild>
                 <Link href="/profile"><User className="mr-2 h-4 w-4" />Profile</Link>
             </DropdownMenuItem>
-             <DropdownMenuItem asChild>
-                <Link href="/"><Dog className="mr-2 h-4 w-4" />Log Out</Link>
+             <DropdownMenuItem onClick={onSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />Log Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

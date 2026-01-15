@@ -39,7 +39,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Button asChild size="lg" className="rounded-full px-8 py-6 text-lg">
-                <Link href="/welcome">Get Started For Free</Link>
+                <Link href="/signup">Get Started For Free</Link>
               </Button>
             </div>
           </div>

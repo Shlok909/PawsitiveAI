@@ -1,12 +1,12 @@
-import Image from "next/image";
+
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
   BarChart2,
   Plus,
   FileText,
-  Bone,
-  Dog,
   Sparkles,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,25 +18,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { DogTailAnimation } from "@/components/icons";
-
-// This would come from user data
-const dogProfile = {
-  name: "Buddy",
-  breed: "Golden Retriever",
-  avatarUrl: PlaceHolderImages.find((img) => img.id === "dog-avatar")?.imageUrl,
-};
+import { useAuth } from "@/firebase/provider";
 
 export default function DashboardPage() {
   const hasReports = false; // This would be dynamic based on user data
+  const { user } = useAuth();
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
-          <p className="text-muted-foreground">Here's what's happening with {dogProfile.name}.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome back, {user?.displayName?.split(' ')[0]}!</h1>
+          <p className="text-muted-foreground">Here's what's happening with your pup.</p>
         </div>
         <Button asChild>
           <Link href="/analyze">
@@ -49,14 +43,14 @@ export default function DashboardPage() {
         <Card className="flex flex-col justify-between">
           <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
             <Avatar className="h-16 w-16 border-2 border-primary">
-              {dogProfile.avatarUrl && <AvatarImage src={dogProfile.avatarUrl} alt={dogProfile.name} />}
+              {user?.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />}
               <AvatarFallback className="text-2xl bg-secondary">
-                {dogProfile.name.charAt(0)}
+                {user?.displayName?.charAt(0) || 'U'}
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle>{dogProfile.name}</CardTitle>
-              <CardDescription>{dogProfile.breed}</CardDescription>
+              <CardTitle>{user?.displayName}</CardTitle>
+              <CardDescription>{user?.email}</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
