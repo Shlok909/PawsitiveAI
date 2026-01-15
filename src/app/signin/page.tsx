@@ -53,7 +53,7 @@ export default function SignInPage() {
       console.error(error);
       let description = "An unexpected error occurred. Please try again.";
       if (error instanceof FirebaseError) {
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        if (error.code === 'auth/invalid-credential') {
           description = "Email or Password Incorrect";
         } else {
           description = error.message;
