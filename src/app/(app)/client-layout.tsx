@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { PawsightLogo } from "@/components/icons";
@@ -125,6 +126,7 @@ function MobileLayout({ children, onSignOut }: { children: React.ReactNode, onSi
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="flex flex-col p-0">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                  <div className="flex h-20 items-center border-b px-6">
                     <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-primary">
                       <PawsightLogo className="h-8 w-8" />
