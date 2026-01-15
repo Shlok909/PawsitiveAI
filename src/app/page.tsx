@@ -25,11 +25,6 @@ export default function LandingPage() {
             <PawsightLogo className="h-8 w-8" />
             <span className="text-2xl font-bold text-foreground">PawsitiveAI</span>
           </Link>
-          <Button asChild variant="ghost">
-            <Link href="/welcome">
-              Go to App <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </header>
 
@@ -45,9 +40,6 @@ export default function LandingPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Button asChild size="lg" className="rounded-full px-8 py-6 text-lg">
                 <Link href="/welcome">Get Started For Free</Link>
-              </Button>
-              <Button asChild size="lg" variant="secondary" className="rounded-full px-8 py-6 text-lg">
-                <Link href="#features">Learn More</Link>
               </Button>
             </div>
           </div>
