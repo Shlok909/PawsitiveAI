@@ -46,7 +46,7 @@ const GenerateInsightsReportOutputSchema = z.object({
     gait: z.string().describe("The dog's gait analysis (e.g., normal, limping)."),
     eyes: z.string().describe("The clarity of the dog's eyes (e.g., clear, red, cloudy)."),
     breathing: z.string().describe("The dog's breathing rate (e.g., normal, heavy, labored)."),
-    skin: z-string().describe("The condition of the dog's skin (e.g., healthy, irritated)."),
+    skin: z.string().describe("The condition of the dog's skin (e.g., healthy, irritated)."),
     urgency: z.enum(['green', 'yellow', 'red']).describe('An urgency meter indicating the severity of any health concerns.'),
   }).describe('A check of the dog\'s health and vital signs.'),
   tips: z.array(z.string()).describe('Actionable tips for the user based on the analysis.'),
