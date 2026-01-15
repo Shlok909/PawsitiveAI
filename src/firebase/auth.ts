@@ -23,22 +23,10 @@ export async function signUp(
   );
   const user = userCredential.user;
 
-  let photoURL = "";
-  if (data.photo) {
-    const storageRef = ref(storage, `profile-photos/${user.uid}`);
-    await uploadBytes(storageRef, data.photo);
-    photoURL = await getDownloadURL(storageRef);
-  }
-
+  // For now, just update the profile with the name.
+  // We can add photo uploads and Firestore writes back in later when needed.
   await updateProfile(user, {
     displayName: data.name,
-    photoURL: photoURL,
-  });
-
-  await setDoc(doc(firestore, "users", user.uid), {
-    name: data.name,
-    email: data.email,
-    photoURL: photoURL,
   });
 
   return user;
