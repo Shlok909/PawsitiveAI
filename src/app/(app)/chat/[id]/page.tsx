@@ -22,6 +22,7 @@ type Message = {
 };
 
 export default function ChatPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const router = useRouter();
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,7 +42,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     try {
-      const storedReport = localStorage.getItem(`report-${params.id}`);
+      const storedReport = localStorage.getItem(`report-${id}`);
       if (storedReport) {
         const parsedReport: GenerateInsightsReportOutput = JSON.parse(storedReport);
         setReport(parsedReport);
@@ -69,7 +70,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
       });
     }
     setInitialLoading(false);
-  }, [params.id, router, toast]);
+  }, [id, router, toast]);
 
   const scrollToBottom = () => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });

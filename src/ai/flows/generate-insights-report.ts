@@ -14,9 +14,8 @@ import {z} from 'genkit';
 const GenerateInsightsReportInputSchema = z.object({
   mediaUrl: z
     .string()
-    .url()
     .describe(
-      "A public URL to a video or image of a dog."
+      "A media file of a dog, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
   breed: z.string().describe('The breed of the dog.'),
   age: z.number().describe('The age of the dog in years.'),
@@ -31,21 +30,23 @@ const GenerateInsightsReportOutputSchema = z.object({
     'aggressive',
     'pain',
     'neutral',
+    'playful',
+    'relaxed',
   ]).describe('The detected emotion of the dog.'),
-  confidence: z.number().describe('The confidence level of the emotion detection (0-100).'),
+  confidence: z.number().min(0).max(100).describe('The confidence level of the emotion detection (0-100).'),
   translation: z.string().describe('A human-readable translation of the dog\'s emotion.'),
   bodyLanguage: z.object({
-    tail: z.enum(['high_wag', 'low', 'still', 'tucked']).describe('The position and movement of the dog\'s tail.'),
-    ears: z.enum(['forward', 'flat', 'back', 'perked']).describe('The position of the dog\'s ears.'),
-    posture: z.enum(['relaxed', 'tense', 'crouched', 'play_bow']).describe('The dog\'s overall posture.'),
-    eyes: z.enum(['soft', 'hard', 'whale_eye']).describe('The appearance of the dog\'s eyes.'),
-    mouth: z.enum(['relaxed', 'pant', 'lip_lick', 'snarl']).describe('The state of the dog\'s mouth.'),
+    tail: z.string().describe("The position and movement of the dog's tail (e.g., high_wag, low, tucked)."),
+    ears: z.string().describe("The position of the dog's ears (e.g., forward, flat, back)."),
+    posture: z.string().describe("The dog's overall posture (e.g., relaxed, tense, crouched)."),
+    eyes: z.string().describe("The appearance of the dog's eyes (e.g., soft, hard, whale_eye)."),
+    mouth: z.string().describe("The state of the dog's mouth (e.g., relaxed, panting, lip_lick)."),
   }).describe('A breakdown of the dog\'s body language.'),
   health: z.object({
-    gait: z.enum(['normal', 'limping', 'stiff']).describe('The dog\'s gait analysis.'),
-    eyes: z.enum(['clear', 'red', 'cloudy']).describe('The clarity of the dog\'s eyes.'),
-    breathing: z.enum(['normal', 'heavy', 'labored']).describe('The dog\'s breathing rate and effort.'),
-    skin: z.enum(['healthy', 'irritated']).describe('The condition of the dog\'s skin.'),
+    gait: z.string().describe("The dog's gait analysis (e.g., normal, limping)."),
+    eyes: z.string().describe("The clarity of the dog's eyes (e.g., clear, red, cloudy)."),
+    breathing: z.string().describe("The dog's breathing rate (e.g., normal, heavy, labored)."),
+    skin: z-string().describe("The condition of the dog's skin (e.g., healthy, irritated)."),
     urgency: z.enum(['green', 'yellow', 'red']).describe('An urgency meter indicating the severity of any health concerns.'),
   }).describe('A check of the dog\'s health and vital signs.'),
   tips: z.array(z.string()).describe('Actionable tips for the user based on the analysis.'),
@@ -62,18 +63,21 @@ const generateInsightsReportPrompt = ai.definePrompt({
   name: 'generateInsightsReportPrompt',
   input: {schema: GenerateInsightsReportInputSchema},
   output: {schema: GenerateInsightsReportOutputSchema},
-  prompt: `Analyze this dog video/image as veterinary behaviorist. Dog details: BREED: {{{breed}}}, AGE: {{{age}}}.\n\nMedia: {{media url=mediaUrl}}\n\nReturn JSON only:\n{\n  "emotion": "happy|anxious|fear|aggressive|pain|neutral",
-  "confidence": 87,
-  "translation": "Human readable message",
-  "body_language": {\n    "tail": "high_wag|low|still|tucked",
-    "ears": "forward|flat|back|perked",
-    "posture": "relaxed|tense|crouched|play_bow",
-    "eyes": "soft|hard|whale_eye",
-    "mouth": "relaxed|pant|lip_lick|snarl"\n  },\n  "health": {\n    "gait": "normal|limping|stiff",
-    "eyes": "clear|red|cloudy",
-    "breathing": "normal|heavy|labored",
-    "skin": "healthy|irritated",
-    "urgency": "green|yellow|red"\n  },\n  "tips": ["Walk now", "Monitor ears", "Try calming treats"]\n}`,
+  prompt: `You are a world-class veterinary behaviorist. Analyze the provided media of a dog with the following details: BREED: {{{breed}}}, AGE: {{{age}}}.
+
+Media: {{media url=mediaUrl}}
+
+Carefully observe the dog's body language (tail, ears, posture, eyes, mouth) and any vocalizations. Also, assess its general physical condition for any visible health indicators (gait, eye clarity, breathing, skin).
+
+Based on your comprehensive analysis, provide a detailed report in the following JSON format. Ensure every field is filled out accurately.
+
+- **emotion**: The primary emotion detected.
+- **confidence**: Your confidence in the emotion detection, from 0 to 100.
+- **translation**: A short, empathetic, human-readable translation of what the dog is likely feeling.
+- **bodyLanguage**: Object detailing specific cues.
+- **health**: Object detailing key health observations.
+- **urgency**: A 'green', 'yellow', or 'red' rating. 'green' for no concerns, 'yellow' for something to monitor, 'red' for a recommendation to see a vet.
+- **tips**: Provide 3-4 concise, actionable tips for the owner based on your findings.`,
 });
 
 const generateInsightsReportFlow = ai.defineFlow(
@@ -84,6 +88,9 @@ const generateInsightsReportFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await generateInsightsReportPrompt(input);
-    return output!;
+    if (!output) {
+      throw new Error("Unable to generate insights report");
+    }
+    return output;
   }
 );

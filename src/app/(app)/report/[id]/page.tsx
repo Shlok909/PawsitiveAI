@@ -50,6 +50,7 @@ const urgencyConfig = {
 };
 
 export default function ReportPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const router = useRouter();
   const { toast } = useToast();
   const [report, setReport] = useState<GenerateInsightsReportOutput | null>(null);
@@ -57,7 +58,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     try {
-      const storedReport = localStorage.getItem(`report-${params.id}`);
+      const storedReport = localStorage.getItem(`report-${id}`);
       if (storedReport) {
         setReport(JSON.parse(storedReport));
       } else {
@@ -77,7 +78,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
       });
     }
     setLoading(false);
-  }, [params.id, router, toast]);
+  }, [id, router, toast]);
 
   if (loading) {
     return (
@@ -123,7 +124,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
             }
         </div>
         <div className="flex-1 space-y-4">
-            <Badge variant="secondary">Report from {new Date(parseInt(params.id)).toLocaleDateString()}</Badge>
+            <Badge variant="secondary">Report from {new Date(parseInt(id)).toLocaleDateString()}</Badge>
             <h1 className="text-5xl font-bold tracking-tighter flex items-center gap-2">{report.emotion} <span className="text-4xl">{eConfig.emoji}</span></h1>
             <p className="text-lg text-muted-foreground">{eConfig.description}</p>
             <Card className="bg-primary/5 border-primary/20">
@@ -140,7 +141,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
                 <Progress value={report.confidence} className="w-32" />
             </div>
             <div className="flex gap-2 pt-4">
-                <Button asChild><Link href={`/chat/${report.id}`}><MessageSquare className="mr-2 h-4 w-4" /> Ask AI Assistant</Link></Button>
+                <Button asChild><Link href={`/chat/${id}`}><MessageSquare className="mr-2 h-4 w-4" /> Ask AI Assistant</Link></Button>
                 <Button variant="secondary"><Share2 className="mr-2 h-4 w-4" /> Share Report</Button>
             </div>
         </div>
@@ -156,11 +157,10 @@ export default function ReportPage({ params }: { params: { id: string } }) {
                     <CardDescription>Understanding the non-verbal cues your dog is showing.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {Object.values(report.bodyLanguage).map((item, index) => (
-                    <div key={index} className="p-4 bg-muted rounded-lg">
-                        <p className="font-semibold text-sm text-muted-foreground capitalize">{item.label}</p>
-                        <p className="text-lg font-bold">{item.value}</p>
-                        <p className="text-sm">{item.insight}</p>
+                    {Object.entries(report.bodyLanguage).map(([key, value]) => (
+                    <div key={key} className="p-4 bg-muted rounded-lg">
+                        <p className="font-semibold text-sm text-muted-foreground capitalize">{key}</p>
+                        <p className="text-lg font-bold">{String(value)}</p>
                     </div>
                     ))}
                 </CardContent>
@@ -172,7 +172,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
                 </CardHeader>
                 <CardContent>
                 <ul className="space-y-3">
-                    {report.actionItems.map((tip, index) => (
+                    {report.tips.map((tip, index) => (
                     <li key={index} className="flex items-start">
                         <ArrowRight className="h-4 w-4 mr-3 mt-1 text-primary shrink-0"/> 
                         <span>{tip}</span>
@@ -190,15 +190,17 @@ export default function ReportPage({ params }: { params: { id: string } }) {
                 <CardDescription>A quick check on key health indicators.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {Object.values(report.healthVitals).map((item, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                {Object.entries(report.health).map(([key, value]) => {
+                  if (key === 'urgency') return null;
+                  return (
+                  <div key={key} className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold">{item.label}</p>
-                      <p className="text-sm text-muted-foreground">{item.value}</p>
+                      <p className="font-semibold capitalize">{key}</p>
+                      <p className="text-sm text-muted-foreground capitalize">{String(value)}</p>
                     </div>
-                    {item.status === 'ok' ? <CheckCircle2 className="h-6 w-6 text-green-500" /> : <AlertTriangle className="h-6 w-6 text-yellow-500" />}
+                    {['clear', 'normal', 'healthy'].includes(String(value)) ? <CheckCircle2 className="h-6 w-6 text-green-500" /> : <AlertTriangle className="h-6 w-6 text-yellow-500" />}
                   </div>
-                ))}
+                )})}
               </CardContent>
             </Card>
              <Card>
