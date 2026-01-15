@@ -132,7 +132,7 @@ export default function ReportClientPage({ id, reportImage }: ReportClientPagePr
             <p className="text-lg text-muted-foreground">{eConfig.description}</p>
             <Card className="bg-primary/5 border-primary/20">
               <CardContent className="p-4">
-                <p className="text-xl text-primary-foreground italic">"{report.translation}"</p>
+                <p className="text-xl text-foreground italic">"{report.translation}"</p>
               </CardContent>
             </Card>
 
