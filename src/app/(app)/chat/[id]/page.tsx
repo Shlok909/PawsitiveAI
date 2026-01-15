@@ -22,7 +22,12 @@ type Message = {
   sender: "user" | "bot";
 };
 
-export default function ChatPage({ params: { id } }: { params: { id: string } }) {
+interface ChatPageProps {
+  params: { id: string };
+}
+
+export default function ChatPage({ params }: ChatPageProps) {
+  const { id } = params;
   const router = useRouter();
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
