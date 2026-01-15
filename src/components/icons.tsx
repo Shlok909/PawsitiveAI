@@ -2,24 +2,26 @@ import { cn } from "@/lib/utils";
 import * as React from 'react';
 
 export const PawsightLogo = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M12 2a2 2 0 0 0-2 2v2.5A5.5 5.5 0 0 0 4.5 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1.5a5.5 5.5 0 0 0 11 0H17a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1.5A5.5 5.5 0 0 0 14 6.5V4a2 2 0 0 0-2-2z" />
-    <path d="M8 14v.5" />
-    <path d="M16 14v.5" />
-    <path d="M11.25 16.25h1.5" />
-    <path d="M9 10.5c.5 0 1-.5 1-1" />
-    <path d="M15 10.5c-.5 0-1-.5-1-1" />
-  </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...props}
+    >
+        <path d="M14.5 7.5c.5.5.5 1.5 0 2" />
+        <path d="M9.5 7.5c-.5.5-.5 1.5 0 2" />
+        <path d="M12 18s2-4 4-4 4 4 4 4" />
+        <path d="M12 18s-2-4-4-4-4 4-4 4" />
+        <path d="M12 18v-2" />
+        <path d="M10 12c.5-1 2-1 3 0" />
+        <path d="M20 12c0-4.42-3.58-8-8-8s-8 3.58-8 8c0 2.4.98 4.63 2.6 6.2" />
+    </svg>
 );
+
 
 export const DogTailAnimation = (props: React.SVGProps<SVGSVGElement>) => {
   return (
