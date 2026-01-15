@@ -26,7 +26,7 @@ export default function LandingPage() {
             <span className="text-2xl font-bold text-foreground">PawsitiveAI</span>
           </Link>
           <Button asChild variant="ghost">
-            <Link href="/dashboard">
+            <Link href="/welcome">
               Go to App <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
