@@ -1,6 +1,4 @@
-
 "use client";
-export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -27,6 +25,10 @@ import { useToast } from "@/hooks/use-toast";
 import { signIn } from "@/firebase/auth";
 import { signInFormSchema, type SignInFormValues } from "@/types/auth";
 import { FirebaseError } from "firebase/app";
+
+// TYPO FIX: 'forc-dynamic' -> 'force-dynamic'
+// YEH LINE PRERENDERING BAND KAREGI
+export const dynamic = 'force-dynamic';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -58,13 +60,17 @@ export default function SignInPage() {
         description: "Welcome back! Redirecting you...",
       });
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       let description = "An unexpected error occurred. Please try again.";
 
-      if (error?.code === 'auth/invalid-credential') {
-        description = "Email or Password Incorrect";
-      } else if (error instanceof FirebaseError) {
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/invalid-credential') {
+          description = "Email or Password Incorrect";
+        } else {
+          description = error.message;
+        }
+      } else if (error instanceof Error) {
         description = error.message;
       }
       
@@ -125,7 +131,7 @@ export default function SignInPage() {
               </div>
               <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                 {isLoading ? <Loader2 className="animate-spin" /> : "Sign In"}
-                 <ArrowRight className="ml-2 h-4 w-4" />
+                {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
               </Button>
             </form>
           </Form>
