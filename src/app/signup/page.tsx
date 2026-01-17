@@ -52,21 +52,19 @@ export default function SignUpPage() {
     } catch (error) {
       console.error(error);
       
-      let title = "An unknown error occurred.";
-      let description = "Please try again.";
+      let title = "Sign-up failed";
+      let description = "An unexpected error occurred. Please try again.";
       let action;
 
       if (error instanceof FirebaseError) {
         if (error.code === 'auth/email-already-in-use') {
-          title = "User already exists.";
-          description = "An account with this email is already registered.";
+          description = "User already exists. Sign in?";
           action = (
-             <Button variant="secondary" size="sm" onClick={() => router.push('/signin')}>
+             <Button variant="secondary" size="sm" onClick={() => router.push(`/signin?email=${encodeURIComponent(data.email)}`)}>
               Sign In
             </Button>
           )
         } else {
-          title = "Sign-up failed";
           description = error.message;
         }
       }

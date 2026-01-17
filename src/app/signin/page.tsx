@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -29,16 +29,24 @@ import { FirebaseError } from "firebase/app";
 
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const emailFromQuery = searchParams.get('email');
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
-      email: "",
+      email: emailFromQuery || "",
       password: "",
     },
   });
+
+  useEffect(() => {
+    if (emailFromQuery) {
+      form.setValue('email', decodeURIComponent(emailFromQuery));
+    }
+  }, [emailFromQuery, form]);
 
   async function onSubmit(data: SignInFormValues) {
     setIsLoading(true);
