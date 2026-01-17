@@ -1,6 +1,6 @@
 
-export const dynamic = 'force-dynamic';
 "use client";
+export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -58,16 +58,16 @@ export default function SignInPage() {
         description: "Welcome back! Redirecting you...",
       });
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       let description = "An unexpected error occurred. Please try again.";
-      if (error instanceof FirebaseError) {
-        if (error.code === 'auth/invalid-credential') {
-          description = "Email or Password Incorrect";
-        } else {
-          description = error.message;
-        }
+
+      if (error?.code === 'auth/invalid-credential') {
+        description = "Email or Password Incorrect";
+      } else if (error instanceof FirebaseError) {
+        description = error.message;
       }
+      
       toast({
         variant: "destructive",
         title: "Sign-in failed",
